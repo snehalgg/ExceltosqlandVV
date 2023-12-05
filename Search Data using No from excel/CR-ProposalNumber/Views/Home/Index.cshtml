@@ -1,0 +1,105 @@
+﻿@{
+    ViewBag.Title = "Upload Excel File";
+    Layout = null;
+}
+@model List<CR_ProposalNumber.Models.ProposalDetails>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Excel File</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    @using (Html.BeginForm("Upload", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div>
+            <h2>Upload Excel File</h2>
+            @if (!string.IsNullOrEmpty(ViewBag.Error))
+            {
+                <div style="color: red;">@ViewBag.Error</div>
+            }
+            <input type="file" name="file" />
+            <input type="submit" value="Upload" />
+        </div>
+    }
+
+    @using (Html.BeginForm("ExportToExcel", "Home", FormMethod.Post))
+    {
+        <input type="submit" value="Download Excel" />
+    }
+
+    <hr />
+
+    <h2>Search Proposal Number</h2>
+    @using (Html.BeginForm("Search", "Home", FormMethod.Post))
+    {
+        <input type="text" name="proposalNumber" placeholder="Enter Proposal Number" />
+        <input type="submit" value="Search" onclick="showHtmlDiv()" />
+    }
+
+    @if (!string.IsNullOrEmpty(ViewBag.SearchError))
+    {
+        <p>@ViewBag.SearchError</p>
+    }
+
+    <div class="Policystat" style="@(Model != null && Model.Any() ? "display:block;" : "display:none;")">
+        <h2>Proposal Details</h2>
+        <table border="1">
+            <tr>
+                <th>Proposal Number</th>
+                <th>Status</th>
+                <th>Sub Status</th>
+                <td>CollectionType</td>
+                <td>IMDCode</td>
+                <td>PolicyHolder</td>
+                <td>PremiumPayerApplicable</td>
+                <td>PayerID</td>
+                <td>Premium</td>
+                <td>TotalTaxes</td>
+                <td>TotalPremiumDue</td>
+                <td>CollectionNumber</td>
+                <td>CollectionDate</td>
+                <!-- Add other columns as needed -->
+            </tr>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var proposal in Model)
+                {
+                    <tr>
+                        <td>@proposal.ProposalNumber</td>
+                        <td>@proposal.Status</td>
+                        <td>@proposal.SubStatus</td>
+                        <td>@proposal.CollectionType</td>
+                        <td>@proposal.IMDCode</td>
+                        <td>@proposal.PolicyHolder</td>
+                        <td>@proposal.PremiumPayerApplicable</td>
+                        <td>@proposal.PayerID</td>
+                        <td>@proposal.Premium</td>
+                        <td>@proposal.TotalTaxes</td>
+                        <td>@proposal.TotalPremiumDue</td>
+                        <td>@proposal.CollectionNumber</td>
+                        <td>@proposal.CollectionDate</td>
+
+
+                        <!-- Add other columns as needed -->
+                    </tr>
+                }
+            }
+            else
+            {
+                <p>No details found.</p>
+            }
+        </table>
+    </div>
+    @*<script>
+            function showHtmlDiv() {
+                var htmlShow = document.getElementById("Policystat");
+                if (htmlShow.style.display === "none") {
+                    htmlShow.style.display = "block";
+                }
+            }
+        </script>*@
+
+</body>
+</html>
